@@ -4,7 +4,11 @@ go 1.18
 
 require github.com/gorilla/mux v1.8.0
 
-require github.com/jmespath/go-jmespath v0.4.0 // indirect
+require (
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/likexian/whois v1.14.2 // indirect
+	golang.org/x/net v0.0.0-20220630215102-69896b714898 // indirect
+)
 
 require (
 	github.com/VirusTotal/vt-go v0.0.0-20220413144842-e010bf48aaee // indirect

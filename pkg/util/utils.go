@@ -3,6 +3,7 @@ package util
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"strings"
 )
 
@@ -20,6 +21,8 @@ func ValidateQuery(message string) (string, error) {
 		uri := buildURL(message)
 		url := hashURL(uri)
 		return url, nil
+	} else if strings.Contains(message, ":") {
+		return "", fmt.Errorf("ipv6 addresses are not supported")
 	} else { //probably already a hash
 		return message, nil
 	}

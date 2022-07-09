@@ -9,9 +9,10 @@ import (
 
 func Ingest(w http.ResponseWriter, r *http.Request) {
 	request := r.URL.Query().Get("req")
-	request, err := util.ValidateQuery(request)
-	if err != nil {
-		log.Println(err)
+	hashedRequest, err := util.ValidateQuery(request)
+	if err == nil {
+		QueryVirusTotal(hashedRequest)
+		QueryWhoIs(request)
 	}
-	QueryVirusTotal(request)
+	log.Println(err)
 }

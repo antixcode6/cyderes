@@ -2,15 +2,23 @@ package api
 
 import (
 	"log"
+	"time"
 
 	"github.com/VirusTotal/vt-go"
 	"github.com/antixcode6/cyderes/pkg/util"
 )
 
-func QueryVirusTotal(url string) {
+type Response struct {
+	Rep         interface{} `json:"Reputation"`
+	Url         interface{} `json:"Url"`
+	LastSubDate time.Time   `json:"Last Submission Date"`
+	DNS         DnsRequest  `json:"DNS Query"`
+}
 
+func QueryVirusTotal(url string) Response {
+	var r Response
 	apikey := util.GetSecret()
-	client := vt.NewClient(apikey.Virustotal)
+	client := vt.NewClient(apikey)
 
 	resp, err := client.GetObject(vt.URL("urls/%s", url))
 	if err != nil {
@@ -21,8 +29,8 @@ func QueryVirusTotal(url string) {
 		log.Fatal(err)
 	}
 
-	rep, _ := resp.Get("reputation")
-	respurl, _ := resp.Get("url")
-	log.Printf("%s (%s) was submitted for the last time on %v\n", respurl, resp.ID(), ls)
-	log.Printf("Reputation of %s : %s", respurl, rep)
+	respRep, _ := resp.Get("reputation")
+	respUrl, _ := resp.Get("url")
+	r = Response{LastSubDate: ls, Url: respUrl, Rep: respRep}
+	return r
 }

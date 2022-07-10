@@ -4,6 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"net"
+	"net/url"
 	"strings"
 )
 
@@ -34,6 +36,21 @@ func buildURL(in string) (url string) {
 		return
 	}
 	return
+}
+
+func StripURL(in string) string {
+	u, err := url.Parse(in)
+	if u.Host != "" {
+		if host, _, err := net.SplitHostPort(u.Host); err == nil {
+			return host
+		} else {
+			return u.Host
+		}
+	}
+	if err != nil {
+		return ""
+	}
+	return ""
 }
 
 func hashURL(in string) (hash string) {

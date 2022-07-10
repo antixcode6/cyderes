@@ -1,18 +1,43 @@
 package api
 
 import (
-	"log"
-	"net/http"
+	"strings"
 
 	"github.com/antixcode6/cyderes/pkg/util"
+	"github.com/aws/aws-lambda-go/events"
 )
 
-func Ingest(w http.ResponseWriter, r *http.Request) {
-	request := r.URL.Query().Get("req")
-	hashedRequest, err := util.ValidateQuery(request)
-	if err == nil {
-		QueryVirusTotal(hashedRequest)
-		QueryWhoIs(request)
+type IQ struct {
+	Url string `json:"url"`
+}
+
+//Ingest takes a query param from AWS API Gateway and passes that along to
+//	ValidateQuery(url)
+func Ingest(request events.APIGatewayProxyRequest) (Response, error) {
+	url := request.QueryStringParameters["req"]
+	if strings.Contains(url, ".") { //probably a URL or IP
+		if strings.Contains(url, "https://") {
+			url = util.StripURL(url)
+		}
+		hashedRequest, err := util.ValidateQuery(url)
+		dnsQuery := QueryNet(url)
+		if err == nil {
+			resp := QueryVirusTotal(hashedRequest)
+			return Response{
+				LastSubDate: resp.LastSubDate,
+				Url:         url,
+				Rep:         resp.Rep,
+				DNS:         dnsQuery,
+			}, nil
+		} else {
+			return Response{}, err
+		}
+	} else { //probably already a hash
+		resp := QueryVirusTotal(url)
+		return Response{
+			LastSubDate: resp.LastSubDate,
+			Url:         url,
+			Rep:         resp.Rep,
+		}, nil
 	}
-	log.Println(err)
 }

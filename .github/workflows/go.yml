@@ -5,8 +5,9 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
+    env:
+      super_secret: ${{ API.VTKEY }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

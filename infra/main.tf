@@ -36,7 +36,7 @@ resource "aws_s3_object" "lambda_cyderes_test" {
   etag = filemd5(data.archive_file.lambda_cyderes_test.output_path)
 }
 resource "aws_lambda_function" "lambda_cyderes_test" {
-  function_name = "cyderes-test"
+  function_name = "cyderes-proxy"
 
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.lambda_cyderes_test.key

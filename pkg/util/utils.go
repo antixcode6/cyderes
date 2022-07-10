@@ -30,6 +30,7 @@ func ValidateQuery(message string) (string, error) {
 	}
 }
 
+//appends the appropriate format for virustotal (they expect http:// and a trailing / pre-hashing of the url)
 func buildURL(in string) (url string) {
 	if strings.Contains(in, ".") && !strings.Contains(in, "http://") {
 		url = `http://` + in + `/`
@@ -38,6 +39,7 @@ func buildURL(in string) (url string) {
 	return
 }
 
+//if a submitted url has https:// strip that in favor of the expected http://
 func StripURL(in string) string {
 	u, err := url.Parse(in)
 	if u.Host != "" {
@@ -53,6 +55,7 @@ func StripURL(in string) string {
 	return ""
 }
 
+//Convert a url from plaintext to SHA256
 func hashURL(in string) (hash string) {
 	h := sha256.New()
 	h.Write([]byte(in))

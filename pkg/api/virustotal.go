@@ -15,6 +15,7 @@ type Response struct {
 	DNS         DnsRequest  `json:"DNS Query"`
 }
 
+//Uses the Virus total sdk/client provided by VT themselves and returns some information
 func QueryVirusTotal(url string) Response {
 	var r Response
 	apikey := util.GetSecret()

@@ -12,6 +12,9 @@ type DnsRequest struct {
 	MX          []*net.MX `json:"MX records"`
 }
 
+//Runs through a query param from Lambda and looks up the
+//
+//Will return some amount of information assuming the input item is not an invalid url
 func QueryNet(server string) DnsRequest {
 	ips, err := net.LookupIP(server)
 	if err != nil {
@@ -26,6 +29,7 @@ func QueryNet(server string) DnsRequest {
 		newError := fmt.Sprintf("Could not get nameserver(s): %v", err)
 		return DnsRequest{
 			Errors: newError,
+			IPs:    ips,
 		}
 
 	}
@@ -33,7 +37,9 @@ func QueryNet(server string) DnsRequest {
 	if err != nil {
 		newError := fmt.Sprintf("could not get mx record(s): %v", err)
 		return DnsRequest{
-			Errors: newError,
+			Errors:      newError,
+			Nameservers: nameserver,
+			IPs:         ips,
 		}
 
 	}

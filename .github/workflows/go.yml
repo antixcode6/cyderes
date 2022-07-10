@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     env:
-      super_secret: ${{ API.VTKEY }}
+      VTKEY: ${{ secrets.VTKEY }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
